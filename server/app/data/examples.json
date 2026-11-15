@@ -1,0 +1,8 @@
+[
+  {"label": "Workout tracker", "prompt": "Create a web app that will help me track my workouts: log exercises with sets, reps and weight, and show my progress per exercise over the last month."},
+  {"label": "Split the bill", "prompt": "Build an app to split trip expenses between friends. Add people, add who paid for what, and show who owes whom at the end with the fewest payments."},
+  {"label": "Study planner", "prompt": "Make a study planner for exam prep: subjects, chapters with a done checkbox, a countdown to the exam date, and a daily target of chapters."},
+  {"label": "Habit streaks", "prompt": "Create a habit tracker where I tick off habits each day and see my current streak and a 30-day grid for every habit."},
+  {"label": "Pomodoro timer", "prompt": "Build a pomodoro timer with 25/5 minute cycles, a sound when a cycle ends, and a count of focus sessions done today."},
+  {"label": "Kirana khata", "prompt": "Make a simple khata book for a small shop: customers, credit given, payments received, and the balance each customer owes, searchable by name."}
+]

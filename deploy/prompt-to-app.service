@@ -1,0 +1,22 @@
+# systemd unit for the API server. deploy/setup.sh fills in the __PLACEHOLDERS__.
+[Unit]
+Description=Prompt to App API (FastAPI + Claude Code builder)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=__APP_USER__
+WorkingDirectory=__REPO_DIR__/server
+# Claude Code and npm need a normal PATH and HOME for the builder user.
+Environment=HOME=__APP_HOME__
+Environment=PATH=__APP_HOME__/.local/bin:/usr/local/bin:/usr/bin:/bin
+ExecStart=__APP_HOME__/.local/bin/uv run --no-dev uvicorn app.main:app --host 127.0.0.1 --port 8000
+Restart=on-failure
+RestartSec=3
+# Light hardening. The builder still needs to write its workspaces and the sites folder.
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+
+[Install]
+WantedBy=multi-user.target

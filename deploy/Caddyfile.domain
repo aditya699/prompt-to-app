@@ -1,0 +1,43 @@
+# With a domain: HTTPS everywhere, and every app on its own subdomain.
+#   https://app.__DOMAIN__                 the builder UI and API
+#   https://<slug>.apps.__DOMAIN__         each deployed app
+#
+# DNS: point two A records at this VM:  app.__DOMAIN__  and  *.apps.__DOMAIN__
+#
+# Each app gets its own certificate the first time someone opens it
+# ("on-demand TLS"). Caddy first asks our API whether that slug exists, so
+# nobody can make it request certificates for made-up names.
+
+{
+	on_demand_tls {
+		ask http://127.0.0.1:8000/api/tls-check
+	}
+}
+
+app.__DOMAIN__ {
+	encode gzip
+
+	handle /api/* {
+		reverse_proxy 127.0.0.1:8000
+	}
+	handle {
+		root * __REPO_DIR__/client/dist
+		try_files {path} /index.html
+		file_server
+	}
+}
+
+*.apps.__DOMAIN__ {
+	tls {
+		on_demand
+	}
+	encode gzip
+	# <slug>.apps.example.com -> labels.3 is <slug> (labels count from the right).
+	root * __SITES_DIR__/{labels.3}
+	try_files {path} {path}/ /index.html
+	file_server
+	header {
+		X-Content-Type-Options nosniff
+		Referrer-Policy strict-origin-when-cross-origin
+	}
+}

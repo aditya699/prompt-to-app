@@ -1,0 +1,21 @@
+# No domain yet: everything on the VM's IP over plain HTTP.
+#   http://<ip>/            the builder UI
+#   http://<ip>/api/...     the API
+#   http://<ip>/apps/<slug>/  each deployed app (served by FastAPI)
+# Fine for trying it out. Get a domain for HTTPS and one subdomain per app.
+
+:80 {
+	encode gzip
+
+	handle /api/* {
+		reverse_proxy 127.0.0.1:8000
+	}
+	handle /apps/* {
+		reverse_proxy 127.0.0.1:8000
+	}
+	handle {
+		root * __REPO_DIR__/client/dist
+		try_files {path} /index.html
+		file_server
+	}
+}

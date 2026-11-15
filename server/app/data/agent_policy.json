@@ -1,0 +1,19 @@
+{
+  "_comment": "What the builder agent may do. Read by app/agents/policy.py. The VM, an unprivileged user and (on Linux) AGENT_SANDBOX=true are the real security boundary; this file is a guardrail on top that also keeps the agent on task.",
+  "tools": ["Read", "Write", "Edit", "Glob", "Grep", "Bash", "TodoWrite"],
+  "blocked_programs": [
+    "sudo", "su", "doas", "ssh", "scp", "sftp", "rsync", "curl", "wget", "nc", "ncat", "telnet",
+    "docker", "podman", "kubectl", "systemctl", "service", "shutdown", "reboot", "crontab",
+    "chown", "mount", "umount", "iptables", "ufw", "apt", "apt-get", "yum", "dnf", "brew",
+    "pip", "pip3", "uv", "git"
+  ],
+  "blocked_patterns": [
+    {"pattern": "rm\\s+-[a-zA-Z]*\\s+(/|~|\\$HOME)(\\s|$)", "reason": "deletes outside the project"},
+    {"pattern": "(^|[\\s'\"=])(/etc|/root|/home|/var|/usr)/", "reason": "touches system folders"},
+    {"pattern": "\\.ssh|\\.aws|\\.config/gcloud", "reason": "reads credentials"},
+    {"pattern": "(^|[\\s/])\\.env(\\s|$)", "reason": "reads secrets"},
+    {"pattern": "npm\\s+(publish|login|adduser|token)", "reason": "publishes or logs in to npm"},
+    {"pattern": "(--global|\\s-g)(\\s|$)", "reason": "installs globally"},
+    {"pattern": "npm\\s+(run\\s+)?(dev|start|preview)(\\s|$)|(^|\\s)(vite|serve|http-server)(\\s*$|\\s+[^b])", "reason": "starts a server that never exits; build with `npm run build` instead"}
+  ]
+}
